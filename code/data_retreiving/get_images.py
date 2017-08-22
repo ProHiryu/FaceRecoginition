@@ -105,7 +105,7 @@ def download():
     print("=" * 50)
 
     for name in get_name_list()[1:3]:
-        dirpath = mkDir("image/" + name)
+        dirpath = mkDir("~/image/" + name)
         word = name
         urls = buildUrls(word)
         index = 0
