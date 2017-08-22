@@ -100,39 +100,26 @@ def mkDir(dirName):
         os.mkdir(dirpath)
     return dirpath
 
-if __name__ == '__main__':
+def download():
     print("欢迎使用百度图片下载脚本！\n目前仅支持单个关键词。")
-    print("下载结果保存在脚本目录下的results文件夹中。")
     print("=" * 50)
-    word = input("请输入你要下载的图片关键词：\n")
 
-    dirpath = mkDir("results")
-
-    urls = buildUrls(word)
-    index = 0
-    for url in urls:
-        print("正在请求：", url)
-        html = requests.get(url, timeout=10).content.decode('utf-8')
-        imgUrls = resolveImgUrl(html)
-        if len(imgUrls) == 0:  # 没有图片则结束
-            break
-        for url in imgUrls:
-            if downImg(url, dirpath, str(index) + ".jpg"):
-                index += 1
-                print("已下载 %s 张" % index)
-
-def get_images():
-    names = get_name_list()
-    for name in names[1:3]:
-        querystring['word'] = name
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        soup = BeautifulSoup(response.text,"html.parser")
-        boxes = soup.find_all('div',class_="imgbox")
-        print(boxes)
-        for box in boxes:
-            imgs = box.find("img")
-            print(img.contents)
+    for name in get_name_list()[1:3]:
+        dirpath = mkDir("image/" + name)
+        word = name
+        urls = buildUrls(word)
+        index = 0
+        for url in urls:
+            print("正在请求：", url)
+            html = requests.get(url, timeout=10).content.decode('utf-8')
+            imgUrls = resolveImgUrl(html)
+            if len(imgUrls) == 0:  # 没有图片则结束
+                break
+            for url in imgUrls:
+                if downImg(url, dirpath, str(index) + ".jpg"):
+                    index += 1
+                    print("已下载 %s 张" % index)
 
 
 if __name__ == "__main__":
-    get_images()
+    download()
