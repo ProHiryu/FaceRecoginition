@@ -58,6 +58,8 @@ char_table = {
 char_table = {ord(key): ord(value) for key, value in char_table.items()}
 
 # 解码图片URL
+
+
 def decode(url):
     # 先替换字符串
     for key, value in str_table.items():
@@ -66,24 +68,30 @@ def decode(url):
     return url.translate(char_table)
 
 # 生成网址列表
+
+
 def buildUrls(word):
     word = urllib.parse.quote(word)
     url = r"http://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&fp=result&queryWord={word}&cl=2&lm=-1&ie=utf-8&oe=utf-8&st=-1&ic=0&word={word}&face=0&istype=2nc=1&pn={pn}&rn=60"
-    urls = (url.format(word=word, pn=x) for x in itertools.count(start=0, step=60))
+    urls = (url.format(word=word, pn=x)
+            for x in itertools.count(start=0, step=60))
     return urls
 
 # 解析JSON获取图片URL
 re_url = re.compile(r'"objURL":"(.*?)"')
+
+
 def resolveImgUrl(html):
     imgUrls = [decode(x) for x in re_url.findall(html)]
     return imgUrls
+
 
 def downImg(imgUrl, dirpath, imgName):
     filename = os.path.join(dirpath, imgName)
     try:
         res = requests.get(imgUrl, timeout=15)
         if str(res.status_code)[0] == "4":
-            print(str(res.status_code), ":" , imgUrl)
+            print(str(res.status_code), ":", imgUrl)
             return False
     except Exception as e:
         print("抛出异常：", imgUrl)
@@ -94,11 +102,12 @@ def downImg(imgUrl, dirpath, imgName):
     return True
 
 
-def mkDir(dirName):
-    dirpath = os.path.join(sys.path[0], dirName)
+def mkDir(dirpa):
+    dirpath = os.path.join("", dirName)
     if not os.path.exists(dirpath):
         os.mkdir(dirpath)
     return dirpath
+
 
 def download():
     print("欢迎使用百度图片下载脚本！\n目前仅支持单个关键词。")
