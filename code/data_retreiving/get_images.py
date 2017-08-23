@@ -102,8 +102,7 @@ def downImg(imgUrl, dirpath, imgName):
     return True
 
 
-def mkDir(dirpa):
-    dirpath = os.path.join("", dirName)
+def mkDir(dirpath):
     if not os.path.exists(dirpath):
         os.mkdir(dirpath)
     return dirpath
