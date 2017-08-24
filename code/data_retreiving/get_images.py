@@ -1,6 +1,5 @@
 # -*-coding:utf8 -*-
 
-from get_names import get_name_list
 import json
 import itertools
 import urllib
@@ -8,6 +7,11 @@ import requests
 import os
 import re
 import sys
+import pickle
+import time
+import threading
+from tqdm import tqdm
+from multiprocessing.pool import ThreadPool
 
 
 str_table = {
@@ -108,26 +112,50 @@ def mkDir(dirpath):
     return dirpath
 
 
-def download():
-    print("欢迎使用百度图片下载脚本！\n目前仅支持单个关键词。")
-    print("=" * 50)
+def download(name,lock, position, total):
+    print("#")
+    text = "download #{:16d}".format(name)
+    with lock:
+        progress = tqdm(
+            total=total,
+            position=position,
+            desc=text,
+        )
+    with lock:
+        progress.close()
 
-    for name in get_name_list()[1:3]:
-        dirpath = mkDir("~/image/" + name)
-        word = name
-        urls = buildUrls(word)
-        index = 0
-        for url in urls:
-            print("正在请求：", url)
-            html = requests.get(url, timeout=10).content.decode('utf-8')
-            imgUrls = resolveImgUrl(html)
-            if len(imgUrls) == 0:  # 没有图片则结束
-                break
-            for url in imgUrls:
-                if downImg(url, dirpath, str(index) + ".jpg"):
-                    index += 1
-                    print("已下载 %s 张" % index)
+    dirpath = mkDir("~/image/" + name)
+    word = name
+    urls = buildUrls(word)
+    for url in urls:
+        html = requests.get(url, timeout=10).content.decode('utf-8')
+        imgUrls = resolveImgUrl(html)
+        if len(imgUrls) == 0:  # 没有图片则结束
+            with lock:
+                progress.update(1)
+            break
+        for url in imgUrls:
+            if downImg(url, dirpath, str(index) + ".jpg"):
+                pass
+        with lock:
+            progress.update(1)
+    with lock:
+        progress.close()
+
+def mutithread():
+    print("开始下载图片")
+    print("=" * 50)
+    names = []
+    with open("names.pickle", "rb") as fi:
+        names = pickle.load(fi)
+
+    pool = ThreadPool(5)
+    lock = threading.Lock()
+    for i, name in enumerate(names, 1):
+        pool.apply_async(download, args=(name,lock, i, 60))
+    pool.close()
+    pool.join()
 
 
 if __name__ == "__main__":
-    download()
+    mutithread()
