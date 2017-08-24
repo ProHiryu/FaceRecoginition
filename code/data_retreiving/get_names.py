@@ -2,6 +2,7 @@
 
 from bs4 import BeautifulSoup
 import requests
+import pickle
 
 
 def get_name_list():
@@ -35,4 +36,6 @@ def get_name_list():
 
 if __name__ == "__main__":
     r = get_name_list()
-    print(r)
+    with open("names.pickle","wb") as fi:
+        pickle.dump(r,fi)
+    fi.close()
