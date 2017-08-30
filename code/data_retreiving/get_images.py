@@ -9,9 +9,7 @@ import re
 import sys
 import pickle
 import time
-import threading
 from tqdm import tqdm
-from multiprocessing.pool import ThreadPool
 
 
 str_table = {
@@ -78,7 +76,7 @@ def buildUrls(word):
     word = urllib.parse.quote(word)
     url = r"http://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&fp=result&queryWord={word}&cl=2&lm=-1&ie=utf-8&oe=utf-8&st=-1&ic=0&word={word}&face=0&istype=2nc=1&pn={pn}&rn=60"
     urls = (url.format(word=word, pn=x)
-            for x in itertools.count(start=0, step=60))
+            for x in itertools.count(start=0, step=30))
     return urls
 
 # 解析JSON获取图片URL
@@ -95,11 +93,11 @@ def downImg(imgUrl, dirpath, imgName):
     try:
         res = requests.get(imgUrl, timeout=15)
         if str(res.status_code)[0] == "4":
-            print(str(res.status_code), ":", imgUrl)
+            # print(str(res.status_code), ":", imgUrl)
             return False
     except Exception as e:
-        print("抛出异常：", imgUrl)
-        print(e)
+        # print("抛出异常：", imgUrl)
+        # print(e)
         return False
     with open(filename, "wb") as f:
         f.write(res.content)
@@ -112,50 +110,37 @@ def mkDir(dirpath):
     return dirpath
 
 
-def download(name,lock, position, total):
-    print("#")
-    text = "download #{:16d}".format(name)
-    with lock:
-        progress = tqdm(
-            total=total,
-            position=position,
-            desc=text,
-        )
-    with lock:
-        progress.close()
-
-    dirpath = mkDir("~/image/" + name)
-    word = name
-    urls = buildUrls(word)
-    for url in urls:
-        html = requests.get(url, timeout=10).content.decode('utf-8')
-        imgUrls = resolveImgUrl(html)
-        if len(imgUrls) == 0:  # 没有图片则结束
-            with lock:
-                progress.update(1)
-            break
-        for url in imgUrls:
-            if downImg(url, dirpath, str(index) + ".jpg"):
-                pass
-        with lock:
-            progress.update(1)
-    with lock:
-        progress.close()
-
-def mutithread():
+def download():
     print("开始下载图片")
     print("=" * 50)
     names = []
     with open("names.pickle", "rb") as fi:
         names = pickle.load(fi)
 
-    pool = ThreadPool(5)
-    lock = threading.Lock()
-    for i, name in enumerate(names, 1):
-        pool.apply_async(download, args=(name,lock, i, 60))
-    pool.close()
-    pool.join()
+    for name in names:
+        index = 0
+        dirpath = mkDir("/Users/songheqi/image/" + name)
+        word = name
+        urls = buildUrls(word)
+        for url in urls:
+            index_url = 1
+            text = "download #{}{:>7}".format(index_url,name)
+            html = requests.get(url, timeout=10).content.decode('utf-8')
+            imgUrls = resolveImgUrl(html)
+            if len(imgUrls) == 0:  # 没有图片则结束
+                break
+            progress = tqdm(
+                total=len(imgUrls),
+            )
+            for i in range(60):
+                progress.update(1)
+
+            for url in imgUrls:
+                if downImg(url, dirpath, str(index) + ".jpg"):
+                    index += 1
+            index_url += 1
+            progress.close()
 
 
 if __name__ == "__main__":
-    mutithread()
+    download()
