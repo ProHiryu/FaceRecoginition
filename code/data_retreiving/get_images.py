@@ -76,7 +76,7 @@ def buildUrls(word):
     word = urllib.parse.quote(word)
     url = r"http://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&fp=result&queryWord={word}&cl=2&lm=-1&ie=utf-8&oe=utf-8&st=-1&ic=0&word={word}&face=0&istype=2nc=1&pn={pn}&rn=60"
     urls = (url.format(word=word, pn=x)
-            for x in itertools.count(start=0, step=30))
+            for x in [0,1,2])
     return urls
 
 # 解析JSON获取图片URL
@@ -109,6 +109,11 @@ def mkDir(dirpath):
         os.mkdir(dirpath)
     return dirpath
 
+def get_dir_name(dirpath):
+    names = []
+    names = os.listdir(dirpath)
+    return names
+
 
 def download():
     print("开始下载图片")
@@ -118,12 +123,15 @@ def download():
         names = pickle.load(fi)
 
     for name in names:
+        finished_names = get_dir_name("/Users/songheqi/image")
+        if (name in finished_names):
+            continue
         index = 0
         dirpath = mkDir("/Users/songheqi/image/" + name)
         word = name
         urls = buildUrls(word)
+        index_url = 1
         for url in urls:
-            index_url = 1
             text = "download #{}{:>7}".format(index_url,name)
             html = requests.get(url, timeout=10).content.decode('utf-8')
             imgUrls = resolveImgUrl(html)
@@ -131,13 +139,12 @@ def download():
                 break
             progress = tqdm(
                 total=len(imgUrls),
+                desc=text
             )
-            for i in range(60):
-                progress.update(1)
-
             for url in imgUrls:
                 if downImg(url, dirpath, str(index) + ".jpg"):
                     index += 1
+                progress.update(1)
             index_url += 1
             progress.close()
 
