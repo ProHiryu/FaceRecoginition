@@ -30,15 +30,18 @@ def build_model():
             padding='same'
         )
     )
+    model.add(Dropout(0.25))
 
     model.add(Convolution2D(filters=64, kernel_size=(5, 5), padding='same'))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2),
                            strides=(2, 2), padding='same'))
+    model.add(Dropout(0.25))
 
     model.add(Flatten())
     model.add(Dense(512))
     model.add(Activation('relu'))
+    model.add(Dropout(0.5))
 
     model.add(Dense(dataset.num_classes))
     model.add(Activation('softmax'))
