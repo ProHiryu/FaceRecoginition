@@ -49,3 +49,7 @@ class ImageData(object):
        print('num of dim:', self.x_train.ndim)
        print('shape:', self.x_train.shape)
        print('size:', self.x_train.size)
+
+if __name__ == "__main__":
+    dataset = ImageData('/Users/songheqi/train_set/')
+    dataset.check()

@@ -12,6 +12,7 @@ from image_data import ImageData
 # 参考官网中VGG网络实现部分
 def build_model():
     model = Sequential()
+    # input shape = [num,32,128,128],num of tensors with shape 128x128
     model.add(
         Convolution2D(
             filters=32,
@@ -59,7 +60,7 @@ def train_model(model, x_train, y_train):
         metrics=['accuracy']
     )
 
-    model.fit(x_train, y_train, batch_size=32, epochs=50)
+    model.fit(x_train, y_train, batch_size=32, epochs=20)
     return model
 
 
@@ -104,4 +105,4 @@ if __name__ == '__main__':
     model = build_model()
     model = train_model(model, dataset.x_train, dataset.y_train)
     evaluate_model(model, dataset.x_test, dataset.y_test)
-    save(model, '/Users/songheqi/model/model.h5')
+    save(model, '/Users/songheqi/model/model2.h5')

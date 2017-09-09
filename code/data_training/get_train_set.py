@@ -34,7 +34,7 @@ def get_train_set(path):
 def read_name_list(path):
     name_list = []
 
-    for child_dir in os.lisdir(path):
+    for child_dir in os.listdir(path):
         name_list.append(child_dir)
 
     return name_list
