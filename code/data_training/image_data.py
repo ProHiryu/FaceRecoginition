@@ -2,28 +2,31 @@
 
 from sklearn.model_selection import train_test_split
 from keras.utils import np_utils
+from get_train_set import get_train_set
 import random
 
 
 class ImageData(object):
 
-    def __init__():
+    def __init__(self,path):
         self.img_size = 128
         self.x_train = None
         self.x_test = None
         self.y_train = None
         self.y_test = None
         self.num_classes = None
+        self.reshape_data(path)
         pass
 
-    def reshape_data(self,counter,x_train,y_train,x_test,y_test):
+    def reshape_data(self,path):
+        imgs,labels,counter = get_train_set(path)
 
         # 获得指定的数据集
-        x_train,y_train,x_test,y_test = train_test_split(imgs,labels,test_size=0.2,random_state=random.randint(0, 100))
+        x_train,x_test,y_train,y_test = train_test_split(imgs,labels,test_size=0.2,random_state=random.randint(0, 100))
 
         # 注意实现的后端差别，这是基于thano的
         x_train = x_train.reshape(x_train.shape[0], 1, self.img_size, self.img_size)/255.0
-        x_test = x_train.reshape(x_test.shape[0], 1, self.img_size, self.img_size)/255.0
+        x_test = x_test.reshape(x_test.shape[0], 1, self.img_size, self.img_size)/255.0
 
         x_train = x_train.astype('float32')
         x_test = x_test.astype('float32')
