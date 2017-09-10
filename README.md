@@ -18,19 +18,19 @@ data retreiving -+
                  |
                  +<other files>       <-- 额外的文件
 
-data training -+
-               |
-               +get_train_set.py      <-- 获取训练图片数据集
-               |
-               +image_data.py         <-- 定义训练数据集类 ImageData
-               |
-               +model.py              <-- 定义模型并训练保存
-               |
-               +test_camera.py        <-- 打开摄像头对模型进行测试
-               |
-               +test_file.py          <-- 打开文件对模型进行测试
-               |
-               +<other files>         <-- 额外的文件
+data training   -+
+                 |
+                 +get_train_set.py      <-- 获取训练图片数据集
+                 |
+                 +image_data.py         <-- 定义训练数据集类 ImageData
+                 |
+                 +model.py              <-- 定义模型并训练保存
+                 |
+                 +test_camera.py        <-- 打开摄像头对模型进行测试
+                 |
+                 +test_file.py          <-- 打开文件对模型进行测试
+                 |
+                 +<other files>         <-- 额外的文件
 ```
 ### 说明
 
