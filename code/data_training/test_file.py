@@ -3,32 +3,34 @@
 import cv2
 from model import load_model, predict
 from get_train_set import read_name_list
+import sys
 
-img = cv2.imread()
 
-            count = 1
-            face_cascade = cv2.CascadeClassifier(
-                '/usr/local/opt/opencv3/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
-            for i in resultArray:
-                if type(i) != str:
-                    try:
-                        gray = cv2.cvtColor(i,cv2.COLOR_BGR2GRAY)
-                    except:
-                        continue
-                    faces = face_cascade.detectMultiScale(gray,1.3,5)
-                    for (x, y, w, h) in faces:
-                        listStr = [str(int(time.time())), str(count)]  #以时间戳和读取的排序作为文件名称
-                        fileName = ''.join(listStr)
+def test_file():
+    count = 1
+    face_cascade = cv2.CascadeClassifier(
+        '/usr/local/opt/opencv3/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
 
-                        f = cv2.resize(gray[y:(y + h), x:(x + w)], (200, 200))
-                        path = face_path+os.sep + child_path + os.sep
-                        if not os.path.exists(path):
-                            os.mkdir(path)
-                        cv2.imwrite((path + fileName + '.jpg'), f)
-                        count += 1
+    argvs = sys.argv
+    for argv in argvs[1:]:
+        img = cv2.imread(argv)
 
-        except IOError:
-            print ("Error")
+        if type(img) != str:
+            try:
+                gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+                print('convert succeed')
+            except:
+                print('can not convert to gray image')
+                continue
+            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+            for (x, y, w, h) in faces:
+                f = cv2.resize(gray[y:(y + h), x:(x + w)], (128, 128))
+                model = load_model('/Users/songheqi/model/model.h5')
+                num,acc = predict(model,f,128)
+                name_list = read_name_list('/Users/songheqi/train_set/')
+                print('The {} picture is '.format(count) + name_list[num] + ' acc : ',acc)
+                count += 1
 
-        else:
-            print ('Already read '+str(count-1)+' Faces to Destination '+face_path)
+
+if __name__ == "__main__":
+    test_file()

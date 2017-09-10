@@ -60,7 +60,7 @@ def train_model(model, x_train, y_train):
         metrics=['accuracy']
     )
 
-    model.fit(x_train, y_train, batch_size=32, epochs=20)
+    model.fit(x_train, y_train, batch_size=32, epochs=35)
     return model
 
 
