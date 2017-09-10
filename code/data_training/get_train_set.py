@@ -66,7 +66,7 @@ def get_face(image_path, face_path):
             continue  # except '.DS_Store'
 
         try:
-            resultArray = read_data(os.path.join(image_path,child_path))
+            resultArray = read_data(os.path.join(image_path, child_path))
 
             count = 1
             face_cascade = cv2.CascadeClassifier(
@@ -74,16 +74,17 @@ def get_face(image_path, face_path):
             for i in resultArray:
                 if type(i) != str:
                     try:
-                        gray = cv2.cvtColor(i,cv2.COLOR_BGR2GRAY)
+                        gray = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
                     except:
                         continue
-                    faces = face_cascade.detectMultiScale(gray,1.3,5)
+                    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
                     for (x, y, w, h) in faces:
-                        listStr = [str(int(time.time())), str(count)]  #以时间戳和读取的排序作为文件名称
+                        # 以时间戳和读取的排序作为文件名称
+                        listStr = [str(int(time.time())), str(count)]
                         fileName = ''.join(listStr)
 
                         f = cv2.resize(gray[y:(y + h), x:(x + w)], (200, 200))
-                        path = face_path+os.sep + child_path + os.sep
+                        path = face_path + os.sep + child_path + os.sep
                         if not os.path.exists(path):
                             os.mkdir(path)
                         cv2.imwrite((path + fileName + '.jpg'), f)
@@ -93,7 +94,8 @@ def get_face(image_path, face_path):
             print ("Error")
 
         else:
-            print ('Already read '+str(count-1)+' Faces to Destination '+face_path)
+            print ('Already read ' + str(count - 1) +
+                   ' Faces to Destination ' + face_path)
 
 if __name__ == "__main__":
-    get_face('/Users/songheqi/image/',r'/Users/songheqi/train_set')
+    get_face('/Users/songheqi/image/', r'/Users/songheqi/train_set')

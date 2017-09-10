@@ -17,7 +17,7 @@ def test_file():
 
         if type(img) != str:
             try:
-                gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 print('convert succeed')
             except:
                 print('can not convert to gray image')
@@ -26,9 +26,10 @@ def test_file():
             for (x, y, w, h) in faces:
                 f = cv2.resize(gray[y:(y + h), x:(x + w)], (128, 128))
                 model = load_model('/Users/songheqi/model/model.h5')
-                num,acc = predict(model,f,128)
+                num, acc = predict(model, f, 128)
                 name_list = read_name_list('/Users/songheqi/train_set/')
-                print('The {} picture is '.format(count) + name_list[num] + ' acc : ',acc)
+                print('The {} picture is '.format(count) +
+                      name_list[num] + ' acc : ', acc)
                 count += 1
 
 

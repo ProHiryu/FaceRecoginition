@@ -21,11 +21,11 @@ def get_name_list():
         r.encoding = 'gbk'
 
         if r.status_code == 200:
-            soup = BeautifulSoup(r.text,"html.parser")
+            soup = BeautifulSoup(r.text, "html.parser")
         else:
             print("requests error")
 
-        ztheis = soup.find_all('td',class_ = "zthei")
+        ztheis = soup.find_all('td', class_="zthei")
 
         for zthei in ztheis:
             if zthei.find_all("a") != []:
@@ -36,6 +36,6 @@ def get_name_list():
 
 if __name__ == "__main__":
     r = get_name_list()
-    with open("names.pickle","wb") as fi:
-        pickle.dump(r,fi)
+    with open("names.pickle", "wb") as fi:
+        pickle.dump(r, fi)
     fi.close()

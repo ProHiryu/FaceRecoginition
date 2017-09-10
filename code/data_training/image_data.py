@@ -8,7 +8,7 @@ import random
 
 class ImageData(object):
 
-    def __init__(self,path):
+    def __init__(self, path):
         self.img_size = 128
         self.x_train = None
         self.x_test = None
@@ -18,20 +18,23 @@ class ImageData(object):
         self.reshape_data(path)
         pass
 
-    def reshape_data(self,path):
-        imgs,labels,counter = get_train_set(path)
+    def reshape_data(self, path):
+        imgs, labels, counter = get_train_set(path)
 
         # 获得指定的数据集
-        x_train,x_test,y_train,y_test = train_test_split(imgs,labels,test_size=0.2,random_state=random.randint(0, 100))
+        x_train, x_test, y_train, y_test = train_test_split(
+            imgs, labels, test_size=0.2, random_state=random.randint(0, 100))
 
         # 注意实现的后端差别，这是基于thano的
-        x_train = x_train.reshape(x_train.shape[0], 1, self.img_size, self.img_size)/255.0
-        x_test = x_test.reshape(x_test.shape[0], 1, self.img_size, self.img_size)/255.0
+        x_train = x_train.reshape(
+            x_train.shape[0], 1, self.img_size, self.img_size) / 255.0
+        x_test = x_test.reshape(
+            x_test.shape[0], 1, self.img_size, self.img_size) / 255.0
 
         x_train = x_train.astype('float32')
         x_test = x_test.astype('float32')
 
-        #将labels转成 binary class matrices
+        # 将labels转成 binary class matrices
         y_train = np_utils.to_categorical(y_train, num_classes=counter)
         y_test = np_utils.to_categorical(y_test, num_classes=counter)
 
@@ -42,13 +45,13 @@ class ImageData(object):
         self.num_classes = counter
 
     def check(self):
-       print('num of dim:', self.x_test.ndim)
-       print('shape:', self.x_test.shape)
-       print('size:', self.x_test.size)
+        print('num of dim:', self.x_test.ndim)
+        print('shape:', self.x_test.shape)
+        print('size:', self.x_test.size)
 
-       print('num of dim:', self.x_train.ndim)
-       print('shape:', self.x_train.shape)
-       print('size:', self.x_train.size)
+        print('num of dim:', self.x_train.ndim)
+        print('shape:', self.x_train.shape)
+        print('size:', self.x_train.size)
 
 if __name__ == "__main__":
     dataset = ImageData('/Users/songheqi/train_set/')

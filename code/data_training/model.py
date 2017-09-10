@@ -4,7 +4,7 @@ import numpy as np
 import keras
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Dense,Activation,Convolution2D,MaxPooling2D,Flatten,Dropout
+from keras.layers import Dense, Activation, Convolution2D, MaxPooling2D, Flatten, Dropout
 from keras.optimizers import SGD
 from image_data import ImageData
 

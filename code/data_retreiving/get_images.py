@@ -76,7 +76,7 @@ def buildUrls(word):
     word = urllib.parse.quote(word)
     url = r"http://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&fp=result&queryWord={word}&cl=2&lm=-1&ie=utf-8&oe=utf-8&st=-1&ic=0&word={word}&face=0&istype=2nc=1&pn={pn}&rn=60"
     urls = (url.format(word=word, pn=x)
-            for x in [0,60,120])
+            for x in [0, 60, 120])
     return urls
 
 # 解析JSON获取图片URL
@@ -109,6 +109,7 @@ def mkDir(dirpath):
         os.mkdir(dirpath)
     return dirpath
 
+
 def get_dir_name(dirpath):
     names = []
     names = os.listdir(dirpath)
@@ -132,7 +133,7 @@ def download():
         urls = buildUrls(word)
         index_url = 1
         for url in urls:
-            text = "download #{}{:>7}".format(index_url,name)
+            text = "download #{}{:>7}".format(index_url, name)
             html = requests.get(url, timeout=10).content.decode('utf-8')
             imgUrls = resolveImgUrl(html)
             if len(imgUrls) == 0:  # 没有图片则结束
